@@ -108,5 +108,5 @@ runs:
         | Mode | ${MODE} |
         | Run ID | \`${RUN_ID}\` |
 
-        Results will appear on your [Modomics Dashboard](https://app.modomics.io) shortly.
+        Results will appear on your [Modomics Dashboard](https://app.modomics.ai) shortly.
         EOF
