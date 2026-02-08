@@ -14,7 +14,24 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-
-      - run: yarn install --frozen-lockfile
+      
+      - name: "Restore Yarn cache"
+        uses: actions/cache@v4
+        id: yarn-cache
+        with:
+          path: |
+            .yarn/cache
+            .yarn/install-state.gz
+          key: yarn-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-${{ runner.os }}-
+      
+      - name: "🤹 Enable Corepack"
+        run: |
+          corepack enable
+          yarn set version stable
+      
+      - name: "📦 Install dependencies"
+        run: yarn install --immutable
 
       - run: yarn test
