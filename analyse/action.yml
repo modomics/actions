@@ -91,6 +91,7 @@ runs:
         path: ${{ inputs.working-directory }}/.modomics-bundle
         retention-days: 7
         if-no-files-found: error
+        include-hidden-files: true
 
     - name: "Write job summary"
       shell: bash
