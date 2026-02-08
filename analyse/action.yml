@@ -1,0 +1,112 @@
+name: "Modomics Analyse"
+description: "Continuous codebase analysis for maintenance tax and module value insights"
+author: "Modomics"
+
+branding:
+  icon: "bar-chart-2"
+  color: "blue"
+
+inputs:
+  npm-token:
+    description: "npm access token for @modomics/orchestrator package"
+    required: true
+
+  pattern:
+    description: "Glob pattern for files to analyse"
+    default: "**/*.{ts,tsx,js,jsx}"
+
+  region:
+    description: "Economic calculation region (uk, us, eu, au)"
+    default: "uk"
+
+  working-directory:
+    description: "Subdirectory to analyse (for monorepos)"
+    default: "."
+
+  exclude:
+    description: "Additional exclusion patterns (comma-separated)"
+    default: ""
+
+  orchestrator-version:
+    description: "Orchestrator version to install (default: latest)"
+    default: "latest"
+
+outputs:
+  files-analysed:
+    description: "Total number of files processed"
+    value: ${{ steps.analyse.outputs.files_analysed }}
+
+  run-id:
+    description: "Correlation ID for debugging"
+    value: ${{ steps.analyse.outputs.run_id }}
+
+  artifact-name:
+    description: "Name of uploaded warehouse bundle artifact"
+    value: ${{ steps.upload.outputs.artifact-name }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup Node.js"
+      uses: actions/setup-node@v4
+      with:
+        node-version: "22"
+        registry-url: "https://registry.npmjs.org"
+
+    - name: "Install orchestrator"
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.npm-token }}
+      run: |
+        echo "Installing @modomics/orchestrator@${{ inputs.orchestrator-version }}..."
+        npm install -g "@modomics/orchestrator@${{ inputs.orchestrator-version }}"
+        modomics-analyse --version
+
+    - name: "Run analysis"
+      id: analyse
+      uses: actions/github-script@v7
+      env:
+        INPUT_PATTERN: ${{ inputs.pattern }}
+        INPUT_REGION: ${{ inputs.region }}
+        INPUT_EXCLUDE: ${{ inputs.exclude }}
+        INPUT_WORKING_DIR: ${{ inputs.working-directory }}
+      with:
+        script: |
+          const analyse = require('${{ github.action_path }}/scripts/analyse.js')
+          await analyse({ context, core, exec })
+
+    - name: "Verify bundle"
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        [[ -d .modomics-bundle ]] || { echo "::error title=MODOMICS_E007::Bundle directory missing. Analysis may have failed."; exit 1; }
+        [[ -f .modomics-bundle/manifest.json ]] || { echo "::error title=MODOMICS_E008::Bundle manifest missing."; exit 1; }
+        echo "Bundle verified."
+
+    - name: "Upload warehouse bundle"
+      id: upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: modomics-bundle-${{ steps.analyse.outputs.run_id }}
+        path: ${{ inputs.working-directory }}/.modomics-bundle
+        retention-days: 7
+        if-no-files-found: error
+
+    - name: "Write job summary"
+      shell: bash
+      env:
+        FILES: ${{ steps.analyse.outputs.files_analysed }}
+        MODE: ${{ steps.analyse.outputs.mode }}
+        RUN_ID: ${{ steps.analyse.outputs.run_id }}
+      run: |
+        cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+        ## Modomics Analysis
+
+        | Metric | Value |
+        |--------|-------|
+        | Files Analysed | ${FILES} |
+        | Mode | ${MODE} |
+        | Run ID | \`${RUN_ID}\` |
+
+        Results will appear on your [Modomics Dashboard](https://app.modomics.io) shortly.
+        EOF

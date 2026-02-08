@@ -1,0 +1,16 @@
+{
+  "name": "modomics-actions",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Customer-facing GitHub Actions for Modomics",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/exec": "^1.1.1",
+    "@actions/github": "^6.0.0",
+    "vitest": "^3.0.5"
+  }
+}

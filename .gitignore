@@ -1,0 +1,4 @@
+node_modules/
+.modomics-bundle/
+*.log
+.DS_Store
