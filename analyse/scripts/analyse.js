@@ -47,6 +47,7 @@ module.exports = async function analyse({ context, core, exec }) {
     "--bundle-output",
     ".modomics-bundle",
     "--ci",
+    "--json",
     "--progress"
   ];
 
