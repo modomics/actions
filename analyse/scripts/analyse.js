@@ -47,8 +47,7 @@ module.exports = async function analyse({ context, core, exec }) {
     "--bundle-output",
     ".modomics-bundle",
     "--ci",
-    "--json",
-    "--progress"
+    "--json=receipt"
   ];
 
   const prNumber = context.payload.pull_request?.number;
