@@ -40,8 +40,6 @@ module.exports = async function analyse({ context, core, exec }) {
     process.env.INPUT_PATTERN,
     "--project",
     `${context.repo.owner}/${context.repo.repo}`,
-    "--region",
-    process.env.INPUT_REGION,
     "--mode",
     mode,
     "--bundle-output",

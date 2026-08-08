@@ -15,10 +15,6 @@ inputs:
     description: "Glob pattern for files to analyse"
     default: "**/*.{ts,tsx,js,jsx}"
 
-  region:
-    description: "Economic calculation region (uk, us, eu, au)"
-    default: "uk"
-
   working-directory:
     description: "Subdirectory to analyse (for monorepos)"
     default: "."
@@ -67,7 +63,6 @@ runs:
       uses: actions/github-script@v7
       env:
         INPUT_PATTERN: ${{ inputs.pattern }}
-        INPUT_REGION: ${{ inputs.region }}
         INPUT_EXCLUDE: ${{ inputs.exclude }}
         INPUT_WORKING_DIR: ${{ inputs.working-directory }}
       with:

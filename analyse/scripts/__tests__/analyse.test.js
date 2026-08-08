@@ -38,7 +38,6 @@ function createMocks(overrides = {}) {
 describe("analyse", () => {
   beforeEach(() => {
     process.env.INPUT_PATTERN = "**/*.ts";
-    process.env.INPUT_REGION = "uk";
     process.env.INPUT_EXCLUDE = "";
     process.env.INPUT_WORKING_DIR = ".";
   });
