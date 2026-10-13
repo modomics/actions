@@ -13,7 +13,7 @@ inputs:
 
   pattern:
     description: "Glob pattern for files to analyse"
-    default: "**/*.{ts,tsx,js,jsx}"
+    default: "**/*.{ts,tsx,js,jsx,mts,mjs,cts,cjs}"
 
   working-directory:
     description: "Subdirectory to analyse (for monorepos)"
