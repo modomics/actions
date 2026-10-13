@@ -1,5 +1,7 @@
 # Modomics Actions
 
+Most engineering time is spent maintaining software that already exists, and coding agents are adding to that pile faster than teams can keep up. Modomics is a software intelligence platform that shows engineering leaders where that time goes. It measures what every module in a codebase costs to maintain, in engineering hours per year, against the value it delivers, then directs AI agents to retire, consolidate or take over the upkeep so engineers get that time back.
+
 Customer-facing GitHub Actions for continuous codebase analysis.
 
 ## Available Actions
@@ -9,7 +11,7 @@ Customer-facing GitHub Actions for continuous codebase analysis.
 Runs Modomics analysis on your codebase and uploads a warehouse bundle as a workflow artifact.
 
 ```yaml
-- uses: modomics/actions/analyse@v1
+- uses: modomics/actions/analyse@v6
   with:
     npm-token: ${{ secrets.MODOMICS_NPM_TOKEN }}
 ```
